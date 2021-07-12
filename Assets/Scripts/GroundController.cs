@@ -6,6 +6,7 @@ public class GroundController : MonoBehaviour
 {
     public int height, width, depth;
     public GameObject groundPart;
+    public float offsetX, offsetY, offsetZ;
 
     void Start()
     {
@@ -20,15 +21,15 @@ public class GroundController : MonoBehaviour
 
     private void generateStandardGround(int height, int width, int depth)
     {
-        for(int i = 0; i < width; i++)
+        for(int x = 0; x < width; x++)
         {
-            for (int j = 0; j < height; j++)
+            for (int y = 0; y < height; y++)
             {
-                for (int k = 0; k < depth; k++)
+                for (int z = 0; z < depth; z++)
                 {
-                    Vector3 pos = new Vector3(i, j, k);
+                    Vector3 pos = new Vector3(x + offsetX, y + offsetY, z + offsetZ);
                     GameObject instGroundPart = Instantiate<GameObject>(groundPart, pos, Quaternion.identity, transform);
-                    instGroundPart.name = "GrondPart" + i + j + k;
+                    instGroundPart.name = "GrondPart" + x + y + z;
                 }
             }
         }
