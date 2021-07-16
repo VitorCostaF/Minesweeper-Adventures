@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
     public GameObject player;
     public float offsetX, offsetY, offsetZ;
 
-    private bool mousePressed;
+    //private bool mousePressed;
 
     Quaternion cameraRotation;
     Quaternion freedCameraRotation;
@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
     {
         freedCameraRotation = transform.rotation;
         cameraRotation = transform.rotation;
-        mousePressed = false;
+        //mousePressed = false;
         offset = new Vector3(offsetX, offsetY, offsetZ);
     }
 
@@ -36,7 +36,7 @@ public class CameraController : MonoBehaviour
         horizontalLookRotation = Mathf.Clamp(horizontalLookRotation, -60, 60);
 
 
-        transform.rotation = Quaternion.Euler(-verticalLookRotation, horizontalLookRotation, 0);
+        //transform.rotation = Quaternion.Euler(-verticalLookRotation, horizontalLookRotation, 0);
 
         //transform.rotation = Quaternion.Euler(verticalLookRotation, horizontalLookRotation, 0);
         transform.position = player.transform.position + offset;
