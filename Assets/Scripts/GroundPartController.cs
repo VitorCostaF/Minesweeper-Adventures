@@ -5,7 +5,11 @@ using UnityEngine;
 public class GroundPartController : MonoBehaviour
 {
 
-    public List<GroundPartClass> observers;
+    public bool mined;
+
+    public int posX, posY, posZ;
+
+    public List<GroundController> observers;
 
     // Start is called before the first frame update
     void Start()
@@ -21,14 +25,13 @@ public class GroundPartController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        foreach(GroundPartClass observer in observers)
+        foreach (GroundController observer in observers)
         {
-            observer.notify();
+            observer.notifyClick(this.gameObject);
         }
-        Destroy(this.gameObject);
     }
 
-    public void registerObservers(GroundPartClass observer)
+    public void registerObservers(GroundController observer)
     {
         observers.Add(observer);
     }

@@ -10,13 +10,11 @@ public class GroundController : MonoBehaviour
     public float offsetX, offsetY, offsetZ;
     public GameObject player;
     private GameObject[,,] groundObjects;
-    private GroundPartClass[,,] groundObjectsClass;
 
     void Start()
     {
         maxBombs = 250;
         groundObjects = new GameObject[width, height, depth];
-        groundObjectsClass = new GroundPartClass[width, height, depth];
         generateStandardGround(height, width, depth);
         placeBombs();
     }
@@ -38,8 +36,13 @@ public class GroundController : MonoBehaviour
                     Vector3 pos = new Vector3(x + offsetX, y + offsetY, z + offsetZ);
                     GameObject instGroundPart = Instantiate<GameObject>(groundPart, pos, Quaternion.identity, transform);
                     instGroundPart.name = "GrondPart" + x + y + z;
-                    groundObjectsClass[x, y, z] = new GroundPartClass();
-                    groundObjectsClass[x, y, z].GroundPartGameObject = instGroundPart ; 
+                    GroundPartController groundPartController = instGroundPart.GetComponent<GroundPartController>();
+                    groundPartController.registerObservers(this);
+                    groundPartController.posX = x;
+                    groundPartController.posY = y;
+                    groundPartController.posZ = z;
+                    groundObjects[x, y, z] = instGroundPart;
+
                 }
             }
         }
@@ -61,15 +64,47 @@ public class GroundController : MonoBehaviour
             int y = Random.Range(0, height);
             int z = Random.Range(0, depth);
 
-            GroundPartClass groundPartClass = groundObjectsClass[x, y, z];
+            GameObject groundPart = groundObjects[x, y, z];
+            GroundPartController groundPartContr = groundPart.GetComponent<GroundPartController>();
 
-            if (!groundPartClass.Mined)
+            if (!groundPartContr.mined)
             {
-                groundPartClass.GroundPartGameObject.GetComponent<Renderer>().material.color = Color.red;
-                groundPartClass.Mined = true;
+                groundPartContr.mined = true;
+                groundPart.GetComponent<Renderer>().material.color = Color.red;
                 bombsPlaced++;
             }
         }
+    }
+
+    public void notifyClick(GameObject groundPart)
+    {
+        GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
+        
+        bombsInNeighborhood(gpController.posX, gpController.posY, gpController.posZ);
+        Destroy(groundPart);
+    }
+
+    public int bombsInNeighborhood(int x, int y, int z)
+    {
+        int bombs = 0;
+        List<int[]> neighbors = neighborhood(x, y, z);
+
+        int i = 0;
+        foreach (int[] neighbor in neighbors)
+        {
+            i++;
+            GameObject groundPart = groundObjects[neighbor[0], neighbor[1], neighbor[2]];
+
+            if(groundPart != null)
+            {
+                if (groundPart.GetComponent<GroundPartController>().mined)
+                {
+                    bombs++;
+                }
+            }
+        }
+
+        return bombs;
     }
 
     private List<int[]> neighborhood(int x, int y, int z)
@@ -86,7 +121,10 @@ public class GroundController : MonoBehaviour
                         (0 <= y + j && y + j < height) &&
                         (0 <= z + k && z + k < depth))
                     {
-                        neighbors.Add(new int[] { x + i, y + j, z + k });
+                        if(!( i == 0 && j == 0 && k == 0))
+                        {
+                            neighbors.Add(new int[] { x + i, y + j, z + k });
+                        }
                     }
                 }
             }
