@@ -5,18 +5,12 @@ using UnityEngine;
 public class GroundPartController : MonoBehaviour
 {
 
-    public bool mined;
-
-    public bool Mined
-    {
-        get { return mined; }
-        set { mined = value; }
-    }
+    public List<GroundPartClass> observers;
 
     // Start is called before the first frame update
     void Start()
     {
-        mined = false;
+
     }
 
     // Update is called once per frame
@@ -27,15 +21,16 @@ public class GroundPartController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (mined)
+        foreach(GroundPartClass observer in observers)
         {
-            gameObject.GetComponent<Renderer>().material.color = Color.red;
+            observer.notify();
         }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+        Destroy(this.gameObject);
+    }
 
+    public void registerObservers(GroundPartClass observer)
+    {
+        observers.Add(observer);
     }
 
 }

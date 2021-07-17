@@ -44,14 +44,14 @@ public class CharacterControls : MonoBehaviour
             if (canJump && Input.GetButton("Jump"))
             {
                 rigidbody.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
-            }
+				grounded = false;
+			}
 
         }
 
-		// We apply gravity manually for more tuning control
-		rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
+        // We apply gravity manually for more tuning control
+        rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
 
-		grounded = false;
 	}
 
 	void OnCollisionStay()

@@ -38,8 +38,8 @@ public class GroundController : MonoBehaviour
                     Vector3 pos = new Vector3(x + offsetX, y + offsetY, z + offsetZ);
                     GameObject instGroundPart = Instantiate<GameObject>(groundPart, pos, Quaternion.identity, transform);
                     instGroundPart.name = "GrondPart" + x + y + z;
-                    groundObjects[x, y, z] = instGroundPart;
                     groundObjectsClass[x, y, z] = new GroundPartClass();
+                    groundObjectsClass[x, y, z].GroundPartGameObject = instGroundPart ; 
                 }
             }
         }
@@ -65,22 +65,52 @@ public class GroundController : MonoBehaviour
 
             if (!groundPartClass.Mined)
             {
-                groundObjects[x, y, z].GetComponent<Renderer>().material.color = Color.red;
+                groundPartClass.GroundPartGameObject.GetComponent<Renderer>().material.color = Color.red;
                 groundPartClass.Mined = true;
                 bombsPlaced++;
             }
         }
     }
 
-}
-
-class GroundPartClass
-{
-    private bool mined = false;
-
-    public bool Mined
+    private List<int[]> neighborhood(int x, int y, int z)
     {
-        get { return mined; }
-        set { mined = value; }
+        List<int[]> neighbors = new List<int[]>();
+
+        for(int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                for (int k = -1; k < 2; k++)
+                {
+                    if( (0 <= x + i && x + i < width ) &&
+                        (0 <= y + j && y + j < height) &&
+                        (0 <= z + k && z + k < depth))
+                    {
+                        neighbors.Add(new int[] { x + i, y + j, z + k });
+                    }
+                }
+            }
+        }
+        return neighbors;
     }
+
 }
+
+
+//class GroundPartClass
+//{
+//    private bool mined = false;
+//    private GameObject groundPartGameObject;
+
+//    public GameObject GroundPartGameObject
+//    {
+//        get { return groundPartGameObject; }
+//        set { groundPartGameObject = value; }
+//    }
+
+//    public bool Mined
+//    {
+//        get { return mined; }
+//        set { mined = value; }
+//    }
+//}

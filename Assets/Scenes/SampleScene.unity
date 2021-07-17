@@ -136,7 +136,6 @@ GameObject:
   - component: {fileID: 70285002}
   - component: {fileID: 70285001}
   - component: {fileID: 70285007}
-  - component: {fileID: 70285006}
   - component: {fileID: 70285005}
   m_Layer: 0
   m_Name: Player
@@ -215,7 +214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 70285000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.2240148, y: 0.000957489, z: 0.3148942}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -238,20 +237,6 @@ MonoBehaviour:
   maxVelocityChange: 10
   canJump: 1
   jumpHeight: 2
---- !u!136 &70285006
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 70285000}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &70285007
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -544,7 +529,7 @@ MonoBehaviour:
   height: 5
   depth: 10
   maxBombs: 250
-  groundPart: {fileID: 6517909405918666209, guid: cfd7abf974ecdb2469149c2e7c314afc, type: 3}
+  groundPart: {fileID: 7741772535041747141, guid: cfd7abf974ecdb2469149c2e7c314afc, type: 3}
   offsetX: 0.5
   offsetY: 0.5
   offsetZ: 0.5
@@ -586,7 +571,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3871401220713503018, guid: 0cc12c760f90e2145ad846c38c9a27f3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 3871401220713503018, guid: 0cc12c760f90e2145ad846c38c9a27f3, type: 3}
       propertyPath: m_LocalRotation.w
