@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GroundController : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class GroundController : MonoBehaviour
 
     void Start()
     {
-        maxBombs = 250;
+        maxBombs = 100;
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
         placeBombs();
@@ -78,10 +79,25 @@ public class GroundController : MonoBehaviour
 
     public void notifyClick(GameObject groundPart)
     {
+        int bombs;
         GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
         
-        bombsInNeighborhood(gpController.posX, gpController.posY, gpController.posZ);
-        Destroy(groundPart);
+        bombs = bombsInNeighborhood(gpController.posX, gpController.posY, gpController.posZ);
+        showTextBombs(groundPart, bombs);
+        //Destroy(groundPart);
+    }
+
+    private void showTextBombs(GameObject groundPart, int bombs)
+    {
+        GameObject texts = groundPart.transform.Find("Texts").gameObject;
+        texts.SetActive(true);
+        for(int i = 0; i < texts.transform.childCount; i++)
+        {
+            GameObject text =  texts.transform.GetChild(i).gameObject;
+            TextMeshPro textMesh = text.GetComponent<TextMeshPro>();
+            textMesh.text = bombs.ToString();
+        }
+
     }
 
     public int bombsInNeighborhood(int x, int y, int z)
