@@ -14,10 +14,11 @@ public class GroundController : MonoBehaviour
 
     void Start()
     {
-        maxBombs = 100;
+        maxBombs = 10;
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
-        placeBombs();
+        placeBomb(0, 0, 0);
+        //placeBombs();
     }
 
     // Update is called once per frame
@@ -71,20 +72,87 @@ public class GroundController : MonoBehaviour
             if (!groundPartContr.mined)
             {
                 groundPartContr.mined = true;
-                groundPart.GetComponent<Renderer>().material.color = Color.red;
+                groundPart.GetComponent<Renderer>().material.color = new Color(4,0,0.5f,1);
                 bombsPlaced++;
             }
         }
     }
 
+    private void placeBomb(int x, int y, int z)
+    {
+
+        GameObject groundPart = groundObjects[x, y, z];
+        GroundPartController groundPartContr = groundPart.GetComponent<GroundPartController>();
+
+        if (!groundPartContr.mined)
+        {
+            groundPartContr.mined = true;
+            groundPart.GetComponent<Renderer>().material.color = new Color(4, 0, 0.5f, 1);
+        }
+    }
+
     public void notifyClick(GameObject groundPart)
+    {
+
+        openGroundSafe(groundPart);
+
+        //int bombs;
+        //GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
+        //List<int[]> neighbors = neighborhood(gpController.posX, gpController.posY, gpController.posZ);
+
+        //bombs = bombsInNeighborhood(neighbors);
+
+        //showTextBombs(groundPart, bombs);
+
+        //if(bombs == 0)
+        //{
+
+        //    //Destroy(groundPart);
+        //}
+       
+    }
+
+    public void clearVisitedMarks()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int z = 0; z < depth; z++)
+                {
+                    GameObject groundPart = groundObjects[x, y, z];
+                    if(groundPart != null)
+                    {
+                        GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
+                        gpController.visited = false;
+                    }
+                }
+            }
+        }
+    }
+
+    public void openGroundSafe(GameObject groundPart)
     {
         int bombs;
         GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
-        
-        bombs = bombsInNeighborhood(gpController.posX, gpController.posY, gpController.posZ);
+        List<int[]> neighborsPos = neighborhood(gpController.posX, gpController.posY, gpController.posZ);
+
+        bombs = bombsInNeighborhood(neighborsPos);
         showTextBombs(groundPart, bombs);
-        //Destroy(groundPart);
+        gpController.visited = true;
+        if (bombs == 0 && !gpController.mined)
+        {
+            Destroy(groundPart);
+            foreach (int[] neighborPos in neighborsPos)
+            {
+                GameObject neighbor = groundObjects[neighborPos[0], neighborPos[1], neighborPos[2]];
+
+                if (neighbor != null && !neighbor.GetComponent<GroundPartController>().visited)
+                {
+                    openGroundSafe(neighbor);
+                }
+            }
+        }
     }
 
     private void showTextBombs(GameObject groundPart, int bombs)
@@ -100,15 +168,12 @@ public class GroundController : MonoBehaviour
 
     }
 
-    public int bombsInNeighborhood(int x, int y, int z)
+    public int bombsInNeighborhood(List<int[]> neighbors)
     {
         int bombs = 0;
-        List<int[]> neighbors = neighborhood(x, y, z);
 
-        int i = 0;
         foreach (int[] neighbor in neighbors)
         {
-            i++;
             GameObject groundPart = groundObjects[neighbor[0], neighbor[1], neighbor[2]];
 
             if(groundPart != null)

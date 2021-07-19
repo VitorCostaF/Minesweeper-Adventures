@@ -6,6 +6,7 @@ public class GroundPartController : MonoBehaviour
 {
 
     public bool mined;
+    public bool visited;
 
     public int posX, posY, posZ;
 
@@ -14,7 +15,7 @@ public class GroundPartController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        visited = false;
     }
 
     // Update is called once per frame
