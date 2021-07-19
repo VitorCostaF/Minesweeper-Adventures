@@ -14,11 +14,11 @@ public class GroundController : MonoBehaviour
 
     void Start()
     {
-        maxBombs = 10;
+        maxBombs = 100;
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
-        placeBomb(0, 0, 0);
-        //placeBombs();
+        //placeBomb(0, 0, 0);
+        placeBombs();
     }
 
     // Update is called once per frame
@@ -91,25 +91,28 @@ public class GroundController : MonoBehaviour
         }
     }
 
-    public void notifyClick(GameObject groundPart)
+    public void notifyClick(GameObject gameObject, EventsEnum gameEvent)
     {
 
-        openGroundSafe(groundPart);
-
-        //int bombs;
-        //GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
-        //List<int[]> neighbors = neighborhood(gpController.posX, gpController.posY, gpController.posZ);
-
-        //bombs = bombsInNeighborhood(neighbors);
-
-        //showTextBombs(groundPart, bombs);
-
-        //if(bombs == 0)
-        //{
-
-        //    //Destroy(groundPart);
-        //}
-       
+        if(gameEvent == EventsEnum.MouseLeftClick)
+        {
+            openGroundSafe(gameObject);
+            clearVisitedMarks();
+        }
+        else if(gameEvent == EventsEnum.MouseRightClick)
+        {
+            GroundPartController groundPartContr = gameObject.GetComponent<GroundPartController>();
+            if (groundPartContr.marked)
+            {
+                groundPartContr.marked = false;
+                gameObject.GetComponent<Renderer>().material.color = new Color(0.2663037f, 0.8018868f, 0.09456211f, 1);
+            }
+            else
+            {
+                groundPartContr.marked = true;
+                gameObject.GetComponent<Renderer>().material.color = Color.blue;
+            }
+        }
     }
 
     public void clearVisitedMarks()

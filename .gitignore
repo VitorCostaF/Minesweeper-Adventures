@@ -6,3 +6,4 @@ UserSettings
 *.meta
 *.cache
 obj
+Debug

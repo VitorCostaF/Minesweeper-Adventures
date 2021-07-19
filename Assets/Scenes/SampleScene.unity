@@ -525,9 +525,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cba4afcb9ee932d46bc4bbc7aa851f04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 3
-  height: 2
-  depth: 2
+  width: 10
+  height: 3
+  depth: 10
   maxBombs: 100
   groundPart: {fileID: 7741772535041747141, guid: cfd7abf974ecdb2469149c2e7c314afc, type: 3}
   offsetX: 0.5
