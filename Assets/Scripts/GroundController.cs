@@ -11,10 +11,12 @@ public class GroundController : MonoBehaviour
     public float offsetX, offsetY, offsetZ;
     public GameObject player;
     private GameObject[,,] groundObjects;
+    public bool gameOver;
 
     void Start()
     {
-        maxBombs = 100;
+        gameOver = false;
+        maxBombs = 50;
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
         //placeBomb(0, 0, 0);
@@ -26,7 +28,6 @@ public class GroundController : MonoBehaviour
     {
         
     }
-
     private void generateStandardGround(int height, int width, int depth)
     {
         for(int x = 0; x < width; x++)
@@ -72,7 +73,7 @@ public class GroundController : MonoBehaviour
             if (!groundPartContr.mined)
             {
                 groundPartContr.mined = true;
-                groundPart.GetComponent<Renderer>().material.color = new Color(4,0,0.5f,1);
+                changeGroundColor(groundPart, Color.yellow);
                 bombsPlaced++;
             }
         }
@@ -87,30 +88,50 @@ public class GroundController : MonoBehaviour
         if (!groundPartContr.mined)
         {
             groundPartContr.mined = true;
-            groundPart.GetComponent<Renderer>().material.color = new Color(4, 0, 0.5f, 1);
+            changeGroundColor(groundPart, new Color(4, 0, 0.5f, 1));
         }
     }
 
     public void notifyClick(GameObject gameObject, EventsEnum gameEvent)
     {
-
-        if(gameEvent == EventsEnum.MouseLeftClick)
+        GroundPartController groundPartContr = gameObject.GetComponent<GroundPartController>();
+        if (gameEvent == EventsEnum.MouseLeftClick)
         {
-            openGroundSafe(gameObject);
-            clearVisitedMarks();
+            if (groundPartContr.marked)
+                return;
+
+            if (groundPartContr.mined)
+            {
+                gameOver = true;
+                changeGroundColor(gameObject, Color.red);
+
+            }
+            else
+            {
+                openGroundSafe(gameObject);
+                clearVisitedMarks();
+            }
         }
         else if(gameEvent == EventsEnum.MouseRightClick)
         {
-            GroundPartController groundPartContr = gameObject.GetComponent<GroundPartController>();
+
+            if (groundPartContr.opened)
+            {
+                if (Input.GetKey(KeyCode.LeftControl))
+                    Destroy(gameObject);
+                else
+                    return;
+            }
+
             if (groundPartContr.marked)
             {
                 groundPartContr.marked = false;
-                gameObject.GetComponent<Renderer>().material.color = new Color(0.2663037f, 0.8018868f, 0.09456211f, 1);
+                changeGroundColor(gameObject, new Color(0.2663037f, 0.8018868f, 0.09456211f, 1));
             }
             else
             {
                 groundPartContr.marked = true;
-                gameObject.GetComponent<Renderer>().material.color = Color.blue;
+                changeGroundColor(gameObject, Color.blue);
             }
         }
     }
@@ -143,7 +164,8 @@ public class GroundController : MonoBehaviour
         bombs = bombsInNeighborhood(neighborsPos);
         showTextBombs(groundPart, bombs);
         gpController.visited = true;
-        if (bombs == 0 && !gpController.mined)
+
+        if (bombs == 0 && !gpController.mined && !gpController.marked)
         {
             Destroy(groundPart);
             foreach (int[] neighborPos in neighborsPos)
@@ -160,6 +182,14 @@ public class GroundController : MonoBehaviour
 
     private void showTextBombs(GameObject groundPart, int bombs)
     {
+        GroundPartController controller = groundPart.GetComponent<GroundPartController>();
+        if (controller.mined || controller.marked)
+        {
+            return;
+        }
+
+        controller.opened = true;
+
         GameObject texts = groundPart.transform.Find("Texts").gameObject;
         texts.SetActive(true);
         for(int i = 0; i < texts.transform.childCount; i++)
@@ -215,24 +245,8 @@ public class GroundController : MonoBehaviour
         }
         return neighbors;
     }
-
+    private void changeGroundColor(GameObject gameObject, Color color)
+    {
+        gameObject.GetComponent<Renderer>().material.color = color;
+    }
 }
-
-
-//class GroundPartClass
-//{
-//    private bool mined = false;
-//    private GameObject groundPartGameObject;
-
-//    public GameObject GroundPartGameObject
-//    {
-//        get { return groundPartGameObject; }
-//        set { groundPartGameObject = value; }
-//    }
-
-//    public bool Mined
-//    {
-//        get { return mined; }
-//        set { mined = value; }
-//    }
-//}

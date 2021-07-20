@@ -8,6 +8,7 @@ public class GroundPartController : MonoBehaviour
     public bool mined;
     public bool visited;
     public bool marked;
+    public bool opened;
 
     public int posX, posY, posZ;
 
