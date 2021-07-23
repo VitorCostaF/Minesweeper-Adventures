@@ -19,7 +19,6 @@ public class GroundController : MonoBehaviour
         maxBombs = 50;
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
-        //placeBomb(0, 0, 0);
         placeBombs();
     }
 
@@ -28,6 +27,7 @@ public class GroundController : MonoBehaviour
     {
         
     }
+
     private void generateStandardGround(int height, int width, int depth)
     {
         for(int x = 0; x < width; x++)
@@ -36,6 +36,11 @@ public class GroundController : MonoBehaviour
             {
                 for (int z = 0; z < depth; z++)
                 {
+                    if(groundObjects[x, y, z] != null)
+                    {
+                        Destroy(groundObjects[x, y, z]);
+                    }
+
                     Vector3 pos = new Vector3(x + offsetX, y + offsetY, z + offsetZ);
                     GameObject instGroundPart = Instantiate<GameObject>(groundPart, pos, Quaternion.identity, transform);
                     instGroundPart.name = "GrondPart" + x + y + z;
@@ -57,6 +62,13 @@ public class GroundController : MonoBehaviour
 
     }
 
+    public void resetGame()
+    {
+        generateStandardGround(height, width, depth);
+        placeBombs();
+        gameOver = false;
+    }
+
     private void placeBombs()
     {
         int bombsPlaced = 0;
@@ -73,7 +85,7 @@ public class GroundController : MonoBehaviour
             if (!groundPartContr.mined)
             {
                 groundPartContr.mined = true;
-                changeGroundColor(groundPart, Color.yellow);
+                //changeGroundColor(groundPart, Color.yellow);
                 bombsPlaced++;
             }
         }
@@ -94,6 +106,9 @@ public class GroundController : MonoBehaviour
 
     public void notifyClick(GameObject gameObject, EventsEnum gameEvent)
     {
+        if (gameOver)
+            return;
+
         GroundPartController groundPartContr = gameObject.GetComponent<GroundPartController>();
         if (gameEvent == EventsEnum.MouseLeftClick)
         {
@@ -103,8 +118,8 @@ public class GroundController : MonoBehaviour
             if (groundPartContr.mined)
             {
                 gameOver = true;
-                changeGroundColor(gameObject, Color.red);
-
+                explodeAllBombs();
+                //changeGroundColor(gameObject, Color.red);
             }
             else
             {
@@ -134,6 +149,35 @@ public class GroundController : MonoBehaviour
                 changeGroundColor(gameObject, Color.blue);
             }
         }
+    }
+
+    private void explodeAllBombs()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int z = 0; z < depth; z++)
+                {
+                    GameObject groundPart = groundObjects[x, y, z];
+                    if (groundPart != null)
+                    {
+                        GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
+                        if(gpController.mined)
+                        {
+                            explodeBomb(groundPart);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void explodeBomb(GameObject groundPart)
+    {
+        changeGroundColor(groundPart, Color.red);
+        gameOver = true;
+
     }
 
     public void clearVisitedMarks()
@@ -197,6 +241,8 @@ public class GroundController : MonoBehaviour
             GameObject text =  texts.transform.GetChild(i).gameObject;
             TextMeshPro textMesh = text.GetComponent<TextMeshPro>();
             textMesh.text = bombs.ToString();
+            if(bombs == 9 || bombs == 6)
+                textMesh.fontStyle = FontStyles.Underline;
         }
 
     }
