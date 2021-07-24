@@ -348,6 +348,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LimitWallWest
       objectReference: {fileID: 0}
+    - target: {fileID: 4811429883861719531, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ac947e600dafa4b48aa916a8ef4df768, type: 2}
     - target: {fileID: 5183427793781884991, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -508,6 +512,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LimitWallSouth
       objectReference: {fileID: 0}
+    - target: {fileID: 4811429883861719531, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ac947e600dafa4b48aa916a8ef4df768, type: 2}
     - target: {fileID: 5183427793781884991, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -945,12 +953,12 @@ MonoBehaviour:
   height: 3
   depth: 10
   maxBombs: 100
+  markedBombs: 0
   groundPart: {fileID: 7741772535041747141, guid: cfd7abf974ecdb2469149c2e7c314afc, type: 3}
   offsetX: 0.5
   offsetY: 0.5
   offsetZ: 0.5
   player: {fileID: 70285000}
-  gameOver: 0
   gameOverText: {fileID: 306429645}
 --- !u!1 &1311516545
 GameObject:
@@ -1002,6 +1010,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LimitWallNorth
       objectReference: {fileID: 0}
+    - target: {fileID: 4811429883861719531, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ac947e600dafa4b48aa916a8ef4df768, type: 2}
     - target: {fileID: 5183427793781884991, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1444,6 +1456,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LimitWallEast
       objectReference: {fileID: 0}
+    - target: {fileID: 4811429883861719531, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ac947e600dafa4b48aa916a8ef4df768, type: 2}
     - target: {fileID: 5183427793781884991, guid: e2ba34a7a12eefe47bb11fddb7d9fe0d, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -1500,7 +1516,7 @@ PrefabInstance:
     - target: {fileID: 1484749523520226659, guid: 0cc12c760f90e2145ad846c38c9a27f3, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: ce0ba2aa1c8267f4e9870e9f98523f58, type: 2}
+      objectReference: {fileID: 2100000, guid: 264b90d1777c88d47830c930b47a5187, type: 2}
     - target: {fileID: 3871401220713503018, guid: 0cc12c760f90e2145ad846c38c9a27f3, type: 3}
       propertyPath: m_RootOrder
       value: 0
