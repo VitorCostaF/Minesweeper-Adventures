@@ -177,7 +177,7 @@ public class GroundController : MonoBehaviour
             if (groundPartContr.marked)
             {
                 groundPartContr.marked = false;
-                changeGroundColor(gameObject, new Color(0.2663037f, 0.8018868f, 0.09456211f, 1));
+                changeGroundColor(gameObject, new Color(0.289869f, 0.4622642f, 0.1024831f, 1));
 
                 if (groundPartContr.mined)
                 {
