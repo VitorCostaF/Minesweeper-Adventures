@@ -1,24 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GroundController : MonoBehaviour
 {
     public int width, height, depth;
-    public int maxBombs;
+    public int maxBombs, markedBombs;
     public GameObject groundPart;
     public float offsetX, offsetY, offsetZ;
     public GameObject player;
     private GameObject[,,] groundObjects;
-    public bool gameOver;
     public Text gameOverText;
 
     void Start()
     {
         GameManager.Instance.gameOver = false;
+        GameManager.Instance.win = false;
         gameOverText.gameObject.SetActive(false);
         maxBombs = GameManager.Instance.bombs;
+        markedBombs = 0;
         getFieldDimensions();
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
@@ -28,9 +30,22 @@ public class GroundController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.Instance.gameOver)
+        if(markedBombs == maxBombs)
+        {
+            GameManager.Instance.win = true;
+            GameManager.Instance.gameOver = true;
+        }
+
+        if(GameManager.Instance.gameOver && GameManager.Instance.win)
         {
             gameOverText.gameObject.SetActive(true);
+            gameOverText.text = "You Win!!";
+        }
+
+        if (GameManager.Instance.gameOver && !GameManager.Instance.win)
+        {
+            gameOverText.gameObject.SetActive(true);
+            gameOverText.text = "Game Over";
         }
     }
 
@@ -79,7 +94,9 @@ public class GroundController : MonoBehaviour
     {
         generateStandardGround(height, width, depth);
         placeBombs();
+        markedBombs = 0;
         GameManager.Instance.gameOver = false;
+        GameManager.Instance.win = false;
         gameOverText.gameObject.SetActive(false);
     }
 
@@ -103,6 +120,11 @@ public class GroundController : MonoBehaviour
                 bombsPlaced++;
             }
         }
+    }
+
+    public void goToMenu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 
     private void placeBomb(int x, int y, int z)
@@ -156,13 +178,24 @@ public class GroundController : MonoBehaviour
             {
                 groundPartContr.marked = false;
                 changeGroundColor(gameObject, new Color(0.2663037f, 0.8018868f, 0.09456211f, 1));
+
+                if (groundPartContr.mined)
+                {
+                    markedBombs--;
+                }
             }
             else
             {
                 groundPartContr.marked = true;
                 changeGroundColor(gameObject, Color.blue);
+
+                if(groundPartContr.mined)
+                {
+                    markedBombs++;
+                }
             }
         }
+
     }
 
     private void explodeAllBombs()
@@ -191,7 +224,6 @@ public class GroundController : MonoBehaviour
     {
         changeGroundColor(groundPart, Color.red);
         GameManager.Instance.gameOver = true;
-
     }
 
     public void clearVisitedMarks()
@@ -309,4 +341,5 @@ public class GroundController : MonoBehaviour
     {
         gameObject.GetComponent<Renderer>().material.color = color;
     }
+
 }
