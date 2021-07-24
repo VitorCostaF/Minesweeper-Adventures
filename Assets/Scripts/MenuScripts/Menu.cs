@@ -32,8 +32,37 @@ public class Menu : MonoBehaviour
     private void levelButtonClicked(string levelStr)
     {
         int level = Int32.Parse(levelStr[levelStr.Length - 1].ToString());
+
+        GameManager.Instance.level = level;
+
+        switch (level)
+        {
+            case 1:
+                setFieldDimension(5 ,1 ,5);
+                GameManager.Instance.bombs = 3;
+                break;
+            case 2:
+                setFieldDimension(4, 2, 4);
+                GameManager.Instance.bombs = 5;
+                break;
+            case 3:
+                setFieldDimension(5, 3, 5);
+                GameManager.Instance.bombs = 20;
+                break;
+            default:
+                setFieldDimension(10, 3, 10);
+                GameManager.Instance.bombs = 50;
+                break;
+        }
+            
         SceneManager.LoadScene("Game");
     }
 
+    private void setFieldDimension(int width, int height, int depth )
+    {
+        GameManager.Instance.width = width;
+        GameManager.Instance.height = height;
+        GameManager.Instance.depth = depth;
+    }
 
 }

@@ -1,7 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GroundController : MonoBehaviour
 {
@@ -12,11 +12,14 @@ public class GroundController : MonoBehaviour
     public GameObject player;
     private GameObject[,,] groundObjects;
     public bool gameOver;
+    public Text gameOverText;
 
     void Start()
     {
-        gameOver = false;
-        maxBombs = 50;
+        GameManager.Instance.gameOver = false;
+        gameOverText.gameObject.SetActive(false);
+        maxBombs = GameManager.Instance.bombs;
+        getFieldDimensions();
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
         placeBombs();
@@ -25,7 +28,17 @@ public class GroundController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(GameManager.Instance.gameOver)
+        {
+            gameOverText.gameObject.SetActive(true);
+        }
+    }
+
+    private void getFieldDimensions()
+    {
+        width = GameManager.Instance.width;
+        height = GameManager.Instance.height;
+        depth = GameManager.Instance.depth;
     }
 
     private void generateStandardGround(int height, int width, int depth)
@@ -66,7 +79,8 @@ public class GroundController : MonoBehaviour
     {
         generateStandardGround(height, width, depth);
         placeBombs();
-        gameOver = false;
+        GameManager.Instance.gameOver = false;
+        gameOverText.gameObject.SetActive(false);
     }
 
     private void placeBombs()
@@ -106,7 +120,7 @@ public class GroundController : MonoBehaviour
 
     public void notifyClick(GameObject gameObject, EventsEnum gameEvent)
     {
-        if (gameOver)
+        if (GameManager.Instance.gameOver)
             return;
 
         GroundPartController groundPartContr = gameObject.GetComponent<GroundPartController>();
@@ -117,7 +131,7 @@ public class GroundController : MonoBehaviour
 
             if (groundPartContr.mined)
             {
-                gameOver = true;
+                GameManager.Instance.gameOver = true;
                 explodeAllBombs();
                 //changeGroundColor(gameObject, Color.red);
             }
@@ -176,7 +190,7 @@ public class GroundController : MonoBehaviour
     private void explodeBomb(GameObject groundPart)
     {
         changeGroundColor(groundPart, Color.red);
-        gameOver = true;
+        GameManager.Instance.gameOver = true;
 
     }
 
