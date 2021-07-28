@@ -826,6 +826,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mined: 0
+  visited: 0
+  marked: 0
+  opened: 0
+  posX: 0
+  posY: 0
+  posZ: 0
+  explosionPrefab: {fileID: 1598579170449695947, guid: 6ec622c4fac55f743acace236a7d2a77, type: 3}
+  observers: []
 --- !u!1 &8072562209077459693
 GameObject:
   m_ObjectHideFlags: 0

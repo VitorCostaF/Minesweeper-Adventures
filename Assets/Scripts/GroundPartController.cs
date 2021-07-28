@@ -12,6 +12,8 @@ public class GroundPartController : MonoBehaviour
 
     public int posX, posY, posZ;
 
+    public GameObject explosionPrefab;
+
     public List<GroundController> observers;
 
     // Start is called before the first frame update
@@ -65,6 +67,12 @@ public class GroundPartController : MonoBehaviour
     public void registerObservers(GroundController observer)
     {
         observers.Add(observer);
+    }
+
+    public void explodeField()
+    {
+        GameObject explosion = Instantiate<GameObject>(explosionPrefab);
+        explosion.transform.position = this.transform.position;
     }
 
 }

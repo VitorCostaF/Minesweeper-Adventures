@@ -222,8 +222,10 @@ public class GroundController : MonoBehaviour
 
     private void explodeBomb(GameObject groundPart)
     {
-        changeGroundColor(groundPart, Color.red);
+        GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
+        gpController.explodeField();
         GameManager.Instance.gameOver = true;
+        Destroy(groundPart);
     }
 
     public void clearVisitedMarks()
