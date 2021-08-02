@@ -13,6 +13,9 @@ public class GroundController : MonoBehaviour
     public GameObject player;
     private GameObject[,,] groundObjects;
     public Text gameOverText;
+    public float explodeBombFactorTime;
+
+    public int semaphore;
 
     void Start()
     {
@@ -25,6 +28,7 @@ public class GroundController : MonoBehaviour
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
         placeBombs();
+        semaphore = 1;
     }
 
     // Update is called once per frame
@@ -69,7 +73,7 @@ public class GroundController : MonoBehaviour
                         Destroy(groundObjects[x, y, z]);
                     }
 
-                    Vector3 pos = new Vector3(x + offsetX, y + offsetY, z + offsetZ);
+                    Vector3 pos = new Vector3(x + offsetX - width/2, y + offsetY, z + offsetZ - depth/2);
                     GameObject instGroundPart = Instantiate<GameObject>(groundPart, pos, Quaternion.identity, transform);
                     instGroundPart.name = "GrondPart" + x + y + z;
                     GroundPartController groundPartController = instGroundPart.GetComponent<GroundPartController>();
@@ -83,7 +87,7 @@ public class GroundController : MonoBehaviour
             }
         }
 
-        Vector3 playerPos = new Vector3((width / 2) + offsetX, height + offsetY, (depth / 2) + offsetZ);
+        Vector3 playerPos = new Vector3( offsetX , height + offsetY, offsetZ );
 
         player.transform.position = playerPos;
         player.SetActive(true);
@@ -154,6 +158,7 @@ public class GroundController : MonoBehaviour
             if (groundPartContr.mined)
             {
                 GameManager.Instance.gameOver = true;
+                explodeBomb(gameObject);
                 explodeAllBombs();
                 //changeGroundColor(gameObject, Color.red);
             }
@@ -200,9 +205,11 @@ public class GroundController : MonoBehaviour
 
     private void explodeAllBombs()
     {
-        for (int x = 0; x < width; x++)
+        float seconds = explodeBombFactorTime;
+
+        for (int y = 0; y < height; y++)
         {
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
             {
                 for (int z = 0; z < depth; z++)
                 {
@@ -212,12 +219,21 @@ public class GroundController : MonoBehaviour
                         GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
                         if(gpController.mined)
                         {
-                            explodeBomb(groundPart);
+                            StartCoroutine(WaitBeforeExplodeNext(groundPart, seconds));
+                            seconds += explodeBombFactorTime;
                         }
                     }
                 }
             }
         }
+    }
+
+    private IEnumerator<WaitForSeconds> WaitBeforeExplodeNext(GameObject groundPart, float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        if (groundPart != null)
+            explodeBomb(groundPart);
     }
 
     private void explodeBomb(GameObject groundPart)

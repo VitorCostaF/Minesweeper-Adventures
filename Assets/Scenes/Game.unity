@@ -960,6 +960,8 @@ MonoBehaviour:
   offsetZ: 0.5
   player: {fileID: 70285000}
   gameOverText: {fileID: 306429645}
+  explodeBombFactorTime: 0.2
+  semaphore: 0
 --- !u!1 &1311516545
 GameObject:
   m_ObjectHideFlags: 0

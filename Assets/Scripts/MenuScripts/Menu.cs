@@ -39,19 +39,39 @@ public class Menu : MonoBehaviour
         {
             case 1:
                 setFieldDimension(5 ,1 ,5);
-                GameManager.Instance.bombs = 2;
+                GameManager.Instance.bombs = 5;
                 break;
             case 2:
-                setFieldDimension(4, 2, 4);
-                GameManager.Instance.bombs = 2;
+                setFieldDimension(10, 1, 10);
+                GameManager.Instance.bombs = 20;
                 break;
             case 3:
+                setFieldDimension(20, 1, 20);
+                GameManager.Instance.bombs = 100;
+                break;
+            case 4:
+                setFieldDimension(4, 2, 4);
+                GameManager.Instance.bombs = 3;
+                break;
+            case 5:
+                setFieldDimension(7, 2, 7);
+                GameManager.Instance.bombs = 10;
+                break;
+            case 6:
+                setFieldDimension(10, 2, 10);
+                GameManager.Instance.bombs = 40;
+                break;
+            case 7:
+                setFieldDimension(3, 3, 3);
+                GameManager.Instance.bombs = 4;
+                break;
+            case 8:
                 setFieldDimension(5, 3, 5);
                 GameManager.Instance.bombs = 10;
                 break;
             default:
                 setFieldDimension(10, 3, 10);
-                GameManager.Instance.bombs = 25;
+                GameManager.Instance.bombs = 30;
                 break;
         }
             
