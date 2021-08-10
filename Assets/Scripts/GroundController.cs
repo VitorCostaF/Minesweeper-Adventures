@@ -160,7 +160,6 @@ public class GroundController : MonoBehaviour
                 GameManager.Instance.gameOver = true;
                 explodeBomb(gameObject);
                 explodeAllBombs();
-                //changeGroundColor(gameObject, Color.red);
             }
             else
             {
