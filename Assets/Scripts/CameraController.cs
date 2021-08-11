@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
 
     public GameObject player;
     public float offsetX, offsetY, offsetZ;
-    public float damping = 1;
+    public float damping = 1f;
 
     // Start is called before the first frame update
     void Start()
