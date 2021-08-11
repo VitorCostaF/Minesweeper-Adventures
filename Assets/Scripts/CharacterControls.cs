@@ -8,11 +8,9 @@ public class CharacterControls : MonoBehaviour
 {
 
 	public float speed = 10.0f;
-	public float gravity = 10.0f;
-	public float maxVelocityChange = 10.0f;
-	public bool canJump = true;
-	public float jumpHeight = 2.0f;
-	private bool grounded = false;
+	public float turnSpeed = 180f;
+	private float movementInput;
+	private float turnInput;
 
     private new Rigidbody rigidbody;
 
@@ -21,48 +19,36 @@ public class CharacterControls : MonoBehaviour
         rigidbody = GetComponent<Rigidbody>();
         rigidbody.freezeRotation = true;
 		rigidbody.useGravity = false;
-	}
+        Vector3 playerPos = new Vector3(0, GameManager.Instance.height + 0.5f, 0f);
+
+        transform.position = playerPos;
+		transform.gameObject.SetActive(true);
+    }
 
 	void FixedUpdate()
 	{
-		if (grounded)
-		{
-            // Calculate how fast we should be moving
-            Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            targetVelocity = transform.TransformDirection(targetVelocity);
-            targetVelocity *= speed;
 
-            // Apply a force that attempts to reach our target velocity
-            Vector3 velocity = rigidbody.velocity;
-            Vector3 velocityChange = (targetVelocity - velocity);
-            velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
-            velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
-            velocityChange.y = 0;
-            rigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+		movementInput = Input.GetAxis("Vertical");
+		turnInput = Input.GetAxis("Horizontal");
 
-            // Jump
-            if (canJump && Input.GetButton("Jump"))
-            {
-                rigidbody.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
-				grounded = false;
-			}
+		Move();
+        Turn();
 
-        }
+    }
 
-        // We apply gravity manually for more tuning control
-        rigidbody.AddForce(new Vector3(0, -gravity * rigidbody.mass, 0));
 
-	}
+	private void Move()
+    {
+		Vector3 front = new Vector3(transform.forward.x, 0, transform.forward.z);
+		Vector3 movement =   front * movementInput * speed * Time.deltaTime;
+		rigidbody.MovePosition(rigidbody.position + movement);
+    }
 
-	void OnCollisionStay()
-	{
-		grounded = true;
-	}
+	private void Turn()
+    {
+		float turn = turnInput * turnSpeed * Time.deltaTime;
+		Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);
 
-	float CalculateJumpVerticalSpeed()
-	{
-		// From the jump height and gravity we deduce the upwards speed 
-		// for the character to reach at the apex.
-		return Mathf.Sqrt(2 * jumpHeight * gravity);
-	}
+		rigidbody.MoveRotation(rigidbody.rotation * turnRotation);
+    }
 }

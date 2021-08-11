@@ -86,12 +86,6 @@ public class GroundController : MonoBehaviour
                 }
             }
         }
-
-        Vector3 playerPos = new Vector3( offsetX , height + offsetY, offsetZ );
-
-        player.transform.position = playerPos;
-        player.SetActive(true);
-
     }
 
     public void resetGame()

@@ -10,37 +10,24 @@ public class CameraController : MonoBehaviour
 
     public GameObject player;
     public float offsetX, offsetY, offsetZ;
-
-    //private bool mousePressed;
-
-    Quaternion cameraRotation;
-    Quaternion freedCameraRotation;
+    public float damping = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        freedCameraRotation = transform.rotation;
-        cameraRotation = transform.rotation;
-        //mousePressed = false;
         offset = new Vector3(offsetX, offsetY, offsetZ);
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void LateUpdate()
     {
+        float currentAngle = transform.eulerAngles.y;
+        float desiredAngle = player.transform.eulerAngles.y;
+        float angle = Mathf.LerpAngle(currentAngle, desiredAngle, Time.deltaTime * damping);
 
-        verticalLookRotation += Input.GetAxis("Mouse Y");
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -60, 60);
+        Quaternion rotation = Quaternion.Euler(0, angle, 0);
 
-        horizontalLookRotation += Input.GetAxis("Mouse X");
-        horizontalLookRotation = Mathf.Clamp(horizontalLookRotation, -60, 60);
-
-
-        //transform.rotation = Quaternion.Euler(-verticalLookRotation, horizontalLookRotation, 0);
-
-        //transform.rotation = Quaternion.Euler(verticalLookRotation, horizontalLookRotation, 0);
-        transform.position = player.transform.position + offset;
-        //transform.LookAt(player.transform);
-
+        transform.position = player.transform.position + (rotation * offset);
+        transform.LookAt(player.transform);
     }
 }
