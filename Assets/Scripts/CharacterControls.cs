@@ -10,14 +10,18 @@ public class CharacterControls : MonoBehaviour
 	public float speed = 10.0f;
 	public float turnSpeed = 180f;
 	public float startRotX, startRotY, startRotZ;
+	public float gravity = 10f;
+	public float jumpSpeed = 10f;
 	private float movementInput;
 	private float turnInput;
+	private float upMov;
 
     private new Rigidbody rigidbody;
 
     void Awake()
 	{
-        rigidbody = GetComponent<Rigidbody>();
+		upMov = 0;
+		rigidbody = GetComponent<Rigidbody>();
         rigidbody.freezeRotation = true;
 		//rigidbody.useGravity = false;
         Vector3 playerPos = new Vector3(0, GameManager.Instance.height + 3f, 0f);
@@ -41,12 +45,29 @@ public class CharacterControls : MonoBehaviour
 
 	private void Move()
     {
-		Vector3 front = new Vector3(transform.forward.x, 0, transform.forward.z);
-		Vector3 movement =  front * movementInput * speed * Time.deltaTime;
+		Vector3 front;
+		Vector3 movement;
+
+
+		if (Input.GetButton("Jump"))
+        {
+			upMov = jumpSpeed;
+        }
+		else
+        {
+			upMov = Mathf.Clamp(upMov - gravity*Time.deltaTime, 0, 10f);
+		}
+
+
+        front = new Vector3(transform.forward.x  * movementInput * speed, upMov, transform.forward.z * movementInput * speed);
+		movement = front * Time.deltaTime;
+
 		rigidbody.MovePosition(rigidbody.position + movement);
+
+
     }
 
-	private void Turn()
+    private void Turn()
     {
 		float turn = turnInput * turnSpeed * Time.deltaTime;
 
