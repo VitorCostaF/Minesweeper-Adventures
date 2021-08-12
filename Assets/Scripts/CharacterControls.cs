@@ -19,8 +19,8 @@ public class CharacterControls : MonoBehaviour
 	{
         rigidbody = GetComponent<Rigidbody>();
         rigidbody.freezeRotation = true;
-		rigidbody.useGravity = false;
-        Vector3 playerPos = new Vector3(0, GameManager.Instance.height + 0.5f, 0f);
+		//rigidbody.useGravity = false;
+        Vector3 playerPos = new Vector3(0, GameManager.Instance.height + 3f, 0f);
 		transform.rotation = Quaternion.Euler(startRotX, startRotY, startRotZ);
 
         transform.position = playerPos;
