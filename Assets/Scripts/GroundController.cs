@@ -8,14 +8,16 @@ public class GroundController : MonoBehaviour
 {
     public int width, height, depth;
     public int maxBombs, markedBombs;
-    public GameObject groundPart;
     public float offsetX, offsetY, offsetZ;
-    public GameObject player;
-    private GameObject[,,] groundObjects;
-    public Text gameOverText;
     public float explodeBombFactorTime;
+    public float playerMinDistance;
 
-    public int semaphore;
+    public Text gameOverText;
+    public Material groundPartMt, warningMt;
+
+    public GameObject player;
+    public GameObject groundPart;
+    private GameObject[,,] groundObjects;
 
     void Start()
     {
@@ -28,7 +30,6 @@ public class GroundController : MonoBehaviour
         groundObjects = new GameObject[width, height, depth];
         generateStandardGround(height, width, depth);
         placeBombs();
-        semaphore = 1;
     }
 
     // Update is called once per frame
@@ -143,6 +144,9 @@ public class GroundController : MonoBehaviour
         if (GameManager.Instance.gameOver)
             return;
 
+        if(Vector3.Distance(player.transform.position, gameObject.transform.position) > playerMinDistance)
+            return;
+
         GroundPartController groundPartContr = gameObject.GetComponent<GroundPartController>();
         if (gameEvent == EventsEnum.MouseLeftClick)
         {
@@ -175,7 +179,7 @@ public class GroundController : MonoBehaviour
             if (groundPartContr.marked)
             {
                 groundPartContr.marked = false;
-                changeGroundColor(gameObject, new Color(0.4469939f, 0.6509434f, 0.2487095f, 1));
+                gameObject.GetComponent<Renderer>().sharedMaterial = groundPartMt;
 
                 if (groundPartContr.mined)
                 {
@@ -185,7 +189,7 @@ public class GroundController : MonoBehaviour
             else
             {
                 groundPartContr.marked = true;
-                changeGroundColor(gameObject, Color.blue);
+                gameObject.GetComponent<Renderer>().sharedMaterial = warningMt;
 
                 if(groundPartContr.mined)
                 {
