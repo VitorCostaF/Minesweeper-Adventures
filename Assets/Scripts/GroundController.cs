@@ -349,7 +349,7 @@ public class GroundController : MonoBehaviour
         }
     }
 
-    private Color textColor(List<int[]> neighbors, int[] position, bool opened, bool marked)
+    private Color TextColor(List<int[]> neighbors, int[] position, bool opened, bool marked)
     {
         Color color;
         float proximity = 10;
