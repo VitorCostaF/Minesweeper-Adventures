@@ -833,6 +833,7 @@ MonoBehaviour:
   posY: 0
   posZ: 0
   explosionPrefab: {fileID: 1598579170449695947, guid: 6ec622c4fac55f743acace236a7d2a77, type: 3}
+  openingPrefab: {fileID: 5651612511298299083, guid: 649d1222d6a82ca4cb9d2252e76b4e14, type: 3}
   observers: []
 --- !u!1 &8072562209077459693
 GameObject:

@@ -23,15 +23,10 @@ public class CharacterControls : MonoBehaviour
 		upMov = 0;
 		rigidbody = GetComponent<Rigidbody>();
         rigidbody.freezeRotation = true;
-		//rigidbody.useGravity = false;
-        Vector3 playerPos = new Vector3(0, GameManager.Instance.height + 3f, 0f);
-		transform.rotation = Quaternion.Euler(startRotX, startRotY, startRotZ);
+		resetPlayerPosition();
+	}
 
-        transform.position = playerPos;
-		transform.gameObject.SetActive(true);
-    }
-
-	void FixedUpdate()
+    void FixedUpdate()
 	{
 
 		movementInput = Input.GetAxis("Vertical");
@@ -61,8 +56,8 @@ public class CharacterControls : MonoBehaviour
 
         front = new Vector3(transform.forward.x  * movementInput * speed, upMov, transform.forward.z * movementInput * speed);
 		movement = front * Time.deltaTime;
-
-		rigidbody.MovePosition(rigidbody.position + movement);
+		transform.position += movement;
+		//rigidbody.MovePosition(rigidbody.position + movement);
 
 
     }
@@ -74,4 +69,11 @@ public class CharacterControls : MonoBehaviour
 		Vector3 turnRotation = new Vector3(0f, turn, 0f);
 		transform.Rotate( turnRotation, Space.World);
     }
+
+	public void resetPlayerPosition()
+    {
+		transform.rotation = Quaternion.Euler(0, 0, 0);
+		transform.position = new Vector3(0, GameManager.Instance.height + 3f, 0f);
+		transform.gameObject.SetActive(true);
+	}
 }

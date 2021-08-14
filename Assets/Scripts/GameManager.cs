@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public int bombs;
     public bool gameOver = false;
     public bool win = false;
+    public int difficult = 0;
 
     private static GameManager instance = null;
 

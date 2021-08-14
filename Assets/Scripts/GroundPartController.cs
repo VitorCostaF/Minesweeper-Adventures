@@ -12,7 +12,7 @@ public class GroundPartController : MonoBehaviour
 
     public int posX, posY, posZ;
 
-    public GameObject explosionPrefab;
+    public GameObject explosionPrefab, openingPrefab;
 
     public List<GroundController> observers;
 
@@ -33,45 +33,37 @@ public class GroundPartController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            notifyObservers(this.gameObject, EventsEnum.MouseLeftClick);
+            NotifyObservers(this.gameObject, EventsEnum.MouseLeftClick);
 
         }
         else if (Input.GetMouseButtonDown(1))
         {
-            notifyObservers(this.gameObject, EventsEnum.MouseRightClick);
+            NotifyObservers(this.gameObject, EventsEnum.MouseRightClick);
         }
     }
 
-    //private void OnMouseDown()
-    //{
-
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        notifyObservers(this.gameObject, EventsEnum.MouseLeftClick);
-
-    //    }
-    //    else if (Input.GetMouseButtonDown(1))
-    //    {
-    //        notifyObservers(this.gameObject, EventsEnum.MouseRightClick);
-    //    }
-    //}
-
-    private void notifyObservers(GameObject obj, EventsEnum gameEvent)
+    private void NotifyObservers(GameObject obj, EventsEnum gameEvent)
     {
         foreach (GroundController observer in observers)
         {
-            observer.notifyClick(this.gameObject, gameEvent);
+            observer.NotifyClick(this.gameObject, gameEvent);
         }
     }
 
-    public void registerObservers(GroundController observer)
+    public void RegisterObservers(GroundController observer)
     {
         observers.Add(observer);
     }
 
-    public void explodeField()
+    public void ExplodeField()
     {
         GameObject explosion = Instantiate<GameObject>(explosionPrefab);
+        explosion.transform.position = this.transform.position;
+    }
+
+    public void OpenSafeField()
+    {
+        GameObject explosion = Instantiate<GameObject>(openingPrefab);
         explosion.transform.position = this.transform.position;
     }
 
