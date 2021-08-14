@@ -8,7 +8,7 @@ using DG.Tweening;
 public class GroundController : MonoBehaviour
 {
     public int width, height, depth;
-    public int maxBombs, markedBombs, markedFields;
+    private int maxBombs, markedBombs, markedFields;
     public float offsetX, offsetY, offsetZ;
     public float explodeBombFactorTime;
     public float playerMinDistance;
@@ -112,12 +112,12 @@ public class GroundController : MonoBehaviour
 
     public void ResetGame()
     {
+        maxBombs = GameManager.Instance.bombs;
         resetTexts();
         audioGameOver.Stop();
         GameManager.Instance.gameOver = false;
         GameManager.Instance.win = false;
         GameManager.Instance.playSound = true;
-        maxBombs = GameManager.Instance.bombs;
         markedBombs = 0;
         markedFields = 0;
         GenerateStandardGround(height, width, depth);
