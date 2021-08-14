@@ -50,6 +50,7 @@ public class Menu : MonoBehaviour
         int level = Int32.Parse(levelStr[levelStr.Length - 1].ToString());
 
         GameManager.Instance.level = level;
+        
         int difPlus = GameManager.Instance.difficult + 1;
         switch (level)
         {

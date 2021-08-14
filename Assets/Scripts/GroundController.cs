@@ -17,7 +17,8 @@ public class GroundController : MonoBehaviour
     public int fieldsNumber = 10;
 
     public Text gameOverText;
-    public Text bombsText, marksText;
+    public Text bombsText, marksText, difficultText, levelText;
+    public AudioClip winClip, loseClip;
 
     public Material groundPartMt, warningMt;
 
@@ -27,10 +28,11 @@ public class GroundController : MonoBehaviour
     public GameObject groundPart;
     private GameObject[,,] groundObjects;
 
-    private Vector3 playerPos;
+    private AudioSource audioGameOver;
 
     void Start()
     {
+        audioGameOver = gameObject.AddComponent<AudioSource>();
         GenerateWheatFields();
         GetFieldDimensions();
         groundObjects = new GameObject[width, height, depth];
@@ -50,12 +52,24 @@ public class GroundController : MonoBehaviour
         {
             gameOverText.gameObject.SetActive(true);
             gameOverText.text = "You Win!!";
+            if (GameManager.Instance.playSound)
+            {
+                audioGameOver.PlayOneShot(winClip);
+                audioGameOver.volume = 0.1f;
+                GameManager.Instance.playSound = false;
+            }
+
         }
 
         if (GameManager.Instance.gameOver && !GameManager.Instance.win)
         {
             gameOverText.gameObject.SetActive(true);
             gameOverText.text = "Game Over";
+            if(GameManager.Instance.playSound)
+            {
+                audioGameOver.PlayOneShot(loseClip);
+                GameManager.Instance.playSound = false;
+            }
         }
     }
 
@@ -96,17 +110,42 @@ public class GroundController : MonoBehaviour
 
     public void ResetGame()
     {
+        resetTexts();
+        audioGameOver.Stop();
         GameManager.Instance.gameOver = false;
         GameManager.Instance.win = false;
-        gameOverText.gameObject.SetActive(false);
+        GameManager.Instance.playSound = true;
         maxBombs = GameManager.Instance.bombs;
-        bombsText.text = "Bombas: " + maxBombs;
-        marksText.text = "Marcações: " + 0;
         markedBombs = 0;
         markedFields = 0;
         GenerateStandardGround(height, width, depth);
         PlaceBombs();
         player.GetComponent<CharacterControls>().resetPlayerPosition();
+    }
+
+    private void resetTexts()
+    {
+        string difficult; 
+        gameOverText.gameObject.SetActive(false);
+        bombsText.text = "Bombas: " + maxBombs;
+        marksText.text = "Marcações: " + 0;
+        levelText.text = "Nível: " + GameManager.Instance.level;
+
+        switch(GameManager.Instance.difficult)
+        {
+            case 0:
+                difficult = "Fácil";
+                break;
+            case 1:
+                difficult = "Normal";
+                break;
+            default:
+                difficult = "Difícil";
+                break;
+        }
+
+        difficultText.text = "Dificuldade: " + difficult;
+
     }
 
     private void PlaceBombs()
@@ -284,6 +323,7 @@ public class GroundController : MonoBehaviour
         gpController.ShowTextBombs(bombs);
         gpController.visited = true;
 
+
         if (bombs == 0 && !gpController.mined && !gpController.marked)
         {
             gpController.OpenSafeField();
@@ -298,6 +338,11 @@ public class GroundController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private Color textColor(List<int[]> neighbors, int[] position)
+    {
+        return Color.white;
     }
 
     public int BombsInNeighborhood(List<int[]> neighbors)
