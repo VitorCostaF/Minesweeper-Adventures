@@ -34,20 +34,20 @@ public class GroundPartController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            NotifyObservers(this.gameObject, EventsEnum.MouseLeftClick);
+            NotifyObservers(EventsEnum.MouseLeftClick);
 
         }
         else if (Input.GetMouseButtonDown(1))
         {
-            NotifyObservers(this.gameObject, EventsEnum.MouseRightClick);
+            NotifyObservers(EventsEnum.MouseRightClick);
         }
     }
 
-    private void NotifyObservers(GameObject obj, EventsEnum gameEvent)
+    private void NotifyObservers(EventsEnum gameEvent)
     {
         foreach (GroundController observer in observers)
         {
-            observer.NotifyClick(this.gameObject, gameEvent);
+            observer.NotifyClick(gameObject, gameEvent);
         }
     }
 
@@ -59,13 +59,13 @@ public class GroundPartController : MonoBehaviour
     public void ExplodeField()
     {
         GameObject explosion = Instantiate(explosionPrefab);
-        explosion.transform.position = this.transform.position;
+        explosion.transform.position = transform.position;
     }
 
     public void OpenSafeField()
     {
         GameObject explosion = Instantiate(openingPrefab);
-        explosion.transform.position = this.transform.position;
+        explosion.transform.position = transform.position;
     }
 
     public void ShowTextBombs(int bombs)

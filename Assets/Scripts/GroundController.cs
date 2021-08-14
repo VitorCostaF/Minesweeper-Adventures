@@ -13,10 +13,15 @@ public class GroundController : MonoBehaviour
     public float explodeBombFactorTime;
     public float playerMinDistance;
 
+    public int wheatPerFiled = 100;
+    public int fieldsNumber = 10;
+
     public Text gameOverText;
     public Text bombsText, marksText;
 
     public Material groundPartMt, warningMt;
+
+    public GameObject wheatPrefab;
 
     public GameObject player;
     public GameObject groundPart;
@@ -26,6 +31,7 @@ public class GroundController : MonoBehaviour
 
     void Start()
     {
+        GenerateWheatFields();
         GetFieldDimensions();
         groundObjects = new GameObject[width, height, depth];
         ResetGame();    
@@ -338,9 +344,62 @@ public class GroundController : MonoBehaviour
         }
         return neighbors;
     }
-    private void ChangeGroundColor(GameObject gameObject, Color color)
+
+    private void GenerateWheatFields()
     {
-        gameObject.GetComponent<Renderer>().material.color = color;
+        for (int i = 0; i < fieldsNumber; i++)
+        {
+            float xRandom = Random.Range(-30, 30);
+            float zRandom = Random.Range(-30, 30);
+
+            if(-20 <= xRandom && xRandom <= 20 && -20 <= zRandom && zRandom <= 20)
+            {
+                int xz = Random.Range(0, 2);
+                if(xz == 0)
+                {
+                    while (-20 <= xRandom  && xRandom <= 20)
+                    {
+                        xRandom = Random.Range(-30, 30);
+                    }
+                } 
+                else
+                {
+                    while (-20 <= zRandom && zRandom <= 20)
+                    {
+                        zRandom = Random.Range(-30, 30);
+                    }
+                }
+   
+            }
+
+            float widhtRandom = Random.Range(3, 5);
+            float depthRandom = Random.Range(3, 5);
+
+            GenerateWheatField(xRandom, 0, zRandom, i, widhtRandom, depthRandom);
+        }
+        
     }
 
+
+    private void GenerateWheatField(float x, float y, float z, int number, float width, float depth)
+    {
+        GameObject field = new GameObject("WheatField" + number);
+        field.transform.position = new Vector3(x,y,z);
+        InstantiateWheats(field, width, depth);
+    }
+
+    private void InstantiateWheats(GameObject field, float width, float depth)
+    {
+        int wheatPerFiledRandom = Random.Range(wheatPerFiled/2, wheatPerFiled);
+        Vector3 parentPosition = field.transform.position;
+        for (int i = 0; i < wheatPerFiledRandom; i++)
+        {
+            float xWheatRandom = Random.Range(0, width);
+            float zWheatRandom = Random.Range(0, depth);
+
+            GameObject wheat = Instantiate(wheatPrefab);
+            wheat.transform.parent = field.transform;
+            wheat.transform.position = new Vector3(parentPosition.x + xWheatRandom, 1.8f, parentPosition.z + zWheatRandom);
+        }
+    }
 }

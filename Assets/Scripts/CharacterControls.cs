@@ -18,13 +18,14 @@ public class CharacterControls : MonoBehaviour
 
     private new Rigidbody rigidbody;
 
-    void Awake()
+    void Start()
 	{
 		upMov = 0;
 		rigidbody = GetComponent<Rigidbody>();
         rigidbody.freezeRotation = true;
 		resetPlayerPosition();
 	}
+
 
     void FixedUpdate()
 	{
