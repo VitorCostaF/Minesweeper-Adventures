@@ -329,7 +329,7 @@ public class GroundController : MonoBehaviour
 
         bombs = BombsInNeighborhood(neighborsPos);
 
-        gpController.ShowTextBombs(bombs, textColor(neighborsPos, pos, gpController.opened, gpController.marked));
+        gpController.ShowTextBombs(bombs, TextColor(neighborsPos, pos, gpController.opened, gpController.marked));
         gpController.visited = true;
 
 
