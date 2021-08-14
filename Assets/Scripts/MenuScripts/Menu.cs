@@ -126,6 +126,11 @@ public class Menu : MonoBehaviour
         }
     }
 
+    public void CuesToggle(bool tog)
+    {
+        GameManager.Instance.cues = tog;
+    }
+
     private void setFieldDimension(int width, int height, int depth )
     {
         GameManager.Instance.width = width;

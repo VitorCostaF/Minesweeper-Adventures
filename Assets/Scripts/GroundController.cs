@@ -28,6 +28,8 @@ public class GroundController : MonoBehaviour
     public GameObject groundPart;
     private GameObject[,,] groundObjects;
 
+    private bool leftControl = false;
+
     private AudioSource audioGameOver;
 
     void Start()
@@ -188,11 +190,16 @@ public class GroundController : MonoBehaviour
 
     public void NotifyClick(GameObject gameObject, EventsEnum gameEvent)
     {
+        leftControl = false;
         if (GameManager.Instance.gameOver)
             return;
 
         if(Vector3.Distance(player.transform.position, gameObject.transform.position) > playerMinDistance)
             return;
+
+
+        if (Input.GetKey(KeyCode.LeftControl))
+            leftControl = true;
 
         player.transform.DOLookAt(gameObject.transform.position, 0.05f).OnComplete(() => StraightShovel(gameObject, gameEvent));
 
@@ -223,7 +230,7 @@ public class GroundController : MonoBehaviour
 
             if (groundPartContr.opened)
             {
-                if (Input.GetKey(KeyCode.LeftControl))
+                if (leftControl)
                     Destroy(gameObject);
                 else
                     return;
@@ -318,9 +325,11 @@ public class GroundController : MonoBehaviour
         int bombs;
         GroundPartController gpController = groundPart.GetComponent<GroundPartController>();
         List<int[]> neighborsPos = Neighborhood(gpController.posX, gpController.posY, gpController.posZ);
+        int[] pos = new int[] { gpController.posX, gpController.posY, gpController.posZ };
 
         bombs = BombsInNeighborhood(neighborsPos);
-        gpController.ShowTextBombs(bombs);
+
+        gpController.ShowTextBombs(bombs, textColor(neighborsPos, pos, gpController.opened, gpController.marked));
         gpController.visited = true;
 
 
@@ -340,29 +349,59 @@ public class GroundController : MonoBehaviour
         }
     }
 
-    private Color textColor(List<int[]> neighbors, int[] position)
+    private Color textColor(List<int[]> neighbors, int[] position, bool opened, bool marked)
     {
-        return Color.white;
+        Color color;
+        float proximity = 10;
+
+        if (!GameManager.Instance.cues)
+        {
+            return Color.white;
+        }
+
+        Vector3 pos = new Vector3(position[0], position[1], position[2]);
+        List<GameObject> neighborsObj = NeighborhoodWithBomb(neighbors);
+        foreach (GameObject neighbor in neighborsObj)
+        {
+            GroundPartController gpController = neighbor.GetComponent<GroundPartController>();
+            Vector3 neighborPos = new Vector3(gpController.posX, gpController.posY, gpController.posZ);
+            proximity = Mathf.Min(proximity, Vector3.Distance(neighborPos, pos));
+
+        }
+
+        if(proximity <= 1)
+            color = Color.red;
+        else if (proximity <= 1.42)
+            color = new Color(1, 0.5f, 0);
+        else if (proximity <= 1.74)
+            color = Color.yellow;
+        else
+            color = Color.white;
+
+        return color;
     }
 
     public int BombsInNeighborhood(List<int[]> neighbors)
     {
-        int bombs = 0;
+        return NeighborhoodWithBomb(neighbors).Count;
+    }
 
+    private List<GameObject> NeighborhoodWithBomb(List<int[]> neighbors)
+    {
+        List<GameObject> neighborhood = new List<GameObject>();
         foreach (int[] neighbor in neighbors)
         {
             GameObject groundPart = groundObjects[neighbor[0], neighbor[1], neighbor[2]];
 
-            if(groundPart != null)
+            if (groundPart != null)
             {
                 if (groundPart.GetComponent<GroundPartController>().mined)
                 {
-                    bombs++;
+                    neighborhood.Add(groundPart);
                 }
             }
         }
-
-        return bombs;
+        return neighborhood;
     }
 
     private List<int[]> Neighborhood(int x, int y, int z)

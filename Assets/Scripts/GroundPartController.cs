@@ -68,7 +68,7 @@ public class GroundPartController : MonoBehaviour
         explosion.transform.position = transform.position;
     }
 
-    public void ShowTextBombs(int bombs)
+    public void ShowTextBombs(int bombs, Color textColor)
     {
         if (mined || marked)
         {
@@ -86,6 +86,7 @@ public class GroundPartController : MonoBehaviour
             textMesh.text = bombs.ToString();
             if (bombs == 9 || bombs == 6)
                 textMesh.fontStyle = FontStyles.Underline;
+            textMesh.color = textColor;
         }
 
     }

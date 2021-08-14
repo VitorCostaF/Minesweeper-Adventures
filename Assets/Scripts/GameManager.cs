@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public bool win = false;
     public int difficult = 0;
     public bool playSound = true;
+    public bool cues = true;
 
     private static GameManager instance = null;
 
