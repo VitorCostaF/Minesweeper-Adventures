@@ -22,6 +22,8 @@ public class GroundController : MonoBehaviour
     public GameObject groundPart;
     private GameObject[,,] groundObjects;
 
+    private Vector3 playerPos;
+
     void Start()
     {
         GetFieldDimensions();
@@ -32,7 +34,7 @@ public class GroundController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(markedBombs == maxBombs)
+        if(markedBombs == maxBombs && markedBombs == markedFields)
         {
             GameManager.Instance.win = true;
             GameManager.Instance.gameOver = true;
@@ -127,17 +129,16 @@ public class GroundController : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    private void PlaceBomb(int x, int y, int z)
+    private void InclinateShovel(GameObject gameObject, EventsEnum gameEvent)
     {
+        Vector3 playerPos = player.transform.rotation.eulerAngles;
+        player.transform.DORotate(new Vector3(-50, playerPos.y, playerPos.z), 0.5f).SetLoops(2, LoopType.Yoyo).OnComplete(() => HandleClick(gameObject, gameEvent));
+    }
 
-        GameObject groundPart = groundObjects[x, y, z];
-        GroundPartController groundPartContr = groundPart.GetComponent<GroundPartController>();
-
-        if (!groundPartContr.mined)
-        {
-            groundPartContr.mined = true;
-            ChangeGroundColor(groundPart, new Color(4, 0, 0.5f, 1));
-        }
+    private void StraightShovel(GameObject gameObject, EventsEnum gameEvent)
+    {
+        Vector3 playerPos = player.transform.rotation.eulerAngles;
+        player.transform.DORotate(new Vector3(0, playerPos.y, playerPos.z), 0.05f).OnComplete( () => InclinateShovel(gameObject, gameEvent));
     }
 
     public void NotifyClick(GameObject gameObject, EventsEnum gameEvent)
@@ -148,10 +149,12 @@ public class GroundController : MonoBehaviour
         if(Vector3.Distance(player.transform.position, gameObject.transform.position) > playerMinDistance)
             return;
 
-        //playerPivot.transform.DOLookAt(gameObject.transform.position, 1).SetLoops(2, LoopType.Yoyo);
+        player.transform.DOLookAt(gameObject.transform.position, 0.05f).OnComplete(() => StraightShovel(gameObject, gameEvent));
 
-        //player.transform.DOMove(gameObject.transform.position, 1).SetLoops(2, LoopType.Yoyo);
+    }
 
+    private void HandleClick(GameObject gameObject, EventsEnum gameEvent)
+    {
         GroundPartController groundPartContr = gameObject.GetComponent<GroundPartController>();
         if (gameEvent == EventsEnum.MouseLeftClick)
         {
@@ -170,7 +173,7 @@ public class GroundController : MonoBehaviour
                 ClearVisitedMarks();
             }
         }
-        else if(gameEvent == EventsEnum.MouseRightClick)
+        else if (gameEvent == EventsEnum.MouseRightClick)
         {
 
             if (groundPartContr.opened)
@@ -203,7 +206,6 @@ public class GroundController : MonoBehaviour
             }
         }
         marksText.text = "Marcações: " + markedFields;
-
     }
 
     private void ExplodeAllBombs()
@@ -273,7 +275,7 @@ public class GroundController : MonoBehaviour
         List<int[]> neighborsPos = Neighborhood(gpController.posX, gpController.posY, gpController.posZ);
 
         bombs = BombsInNeighborhood(neighborsPos);
-        ShowTextBombs(groundPart, bombs);
+        gpController.ShowTextBombs(bombs);
         gpController.visited = true;
 
         if (bombs == 0 && !gpController.mined && !gpController.marked)
@@ -290,29 +292,6 @@ public class GroundController : MonoBehaviour
                 }
             }
         }
-    }
-
-    private void ShowTextBombs(GameObject groundPart, int bombs)
-    {
-        GroundPartController controller = groundPart.GetComponent<GroundPartController>();
-        if (controller.mined || controller.marked)
-        {
-            return;
-        }
-
-        controller.opened = true;
-
-        GameObject texts = groundPart.transform.Find("Texts").gameObject;
-        texts.SetActive(true);
-        for(int i = 0; i < texts.transform.childCount; i++)
-        {
-            GameObject text =  texts.transform.GetChild(i).gameObject;
-            TextMeshPro textMesh = text.GetComponent<TextMeshPro>();
-            textMesh.text = bombs.ToString();
-            if(bombs == 9 || bombs == 6)
-                textMesh.fontStyle = FontStyles.Underline;
-        }
-
     }
 
     public int BombsInNeighborhood(List<int[]> neighbors)
